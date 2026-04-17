@@ -80,4 +80,4 @@ conn.close()
 
 print("SUCCESS!")
 print(f"Database created: {DB_FILE}")
-print("You can now run: cd ../api then python app.py")
+print("You can now run: python api/app.py")
