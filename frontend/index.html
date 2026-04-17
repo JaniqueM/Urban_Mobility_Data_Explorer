@@ -1,0 +1,376 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NYC Taxi Analytics · Urban Mobility Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="logo">
+      <span class="logo-mark">▲</span>
+      <span class="logo-text">
+        <span>NYC Taxi Analytics</span>
+        <span class="muted">Urban Mobility Explorer</span>
+      </span>
+    </div>
+    <div class="nav-links">
+      <a href="#overview">01 · Overview</a>
+      <a href="#time">02 · Time</a>
+      <a href="#ride">03 · Ride</a>
+      <a href="#insights">04 · Insights</a>
+      <a href="#map">05 · Map</a>
+      <a href="#data">06 · Data</a>
+    </div>
+    <div class="nav-status">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">Connecting</span>
+    </div>
+  </div>
+</nav>
+
+<section class="hero wrap" id="top">
+  <div class="hero-grid">
+    <div class="hero-meta">
+      <span class="num">N°01</span>
+      <span>NYC Taxi Study</span>
+      <span>Jan–Jun 2016</span>
+      <span>Full Corpus</span>
+    </div>
+    <div class="hero-title">
+      <h1>The city,<br><span class="light">measured</span><br>in <span class="accent">yellow.</span></h1>
+    </div>
+    <div class="hero-side">
+      <strong id="heroTrips">—</strong>
+      <span>Records<br>Analysed</span>
+    </div>
+  </div>
+  <div class="hero-bottom">
+    <p class="hero-lede">A complete analytical dashboard of New York City taxi trip records — 1.4 million journeys cleaned, enriched, and rendered in disciplined grid. <strong>Explore the pulse of urban mobility.</strong></p>
+    <div class="hero-cta">
+      <a href="#overview" class="btn btn-primary">
+        Begin study
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="#data" class="btn btn-ghost">Raw data</a>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 01: OVERVIEW -->
+<section class="section wrap" id="overview">
+  <div class="section-head">
+    <div class="section-num">Section <strong>01</strong></div>
+    <div class="section-title"><h2>The <span class="light">aggregate</span> corpus.</h2></div>
+    <p class="section-desc">Five summary statistics derived from the full cleaned record after outlier removal and coordinate validation.</p>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi">
+      <span class="kpi-num">i.</span>
+      <div class="kpi-label">Total Trips</div>
+      <div class="kpi-value" id="kpiTrips"><span class="skeleton"></span></div>
+      <div class="kpi-desc">Cleaned, validated records.</div>
+    </div>
+    <div class="kpi">
+      <span class="kpi-num">ii.</span>
+      <div class="kpi-label">Avg Duration</div>
+      <div class="kpi-value" id="kpiDuration"><span class="skeleton"></span></div>
+      <div class="kpi-desc">Mean time per trip, minutes.</div>
+    </div>
+    <div class="kpi">
+      <span class="kpi-num">iii.</span>
+      <div class="kpi-label">Avg Speed</div>
+      <div class="kpi-value" id="kpiSpeed"><span class="skeleton"></span></div>
+      <div class="kpi-desc">Effective km/h, distance over time.</div>
+    </div>
+    <div class="kpi">
+      <span class="kpi-num">iv.</span>
+      <div class="kpi-label">Avg Passengers</div>
+      <div class="kpi-value" id="kpiPassengers"><span class="skeleton"></span></div>
+      <div class="kpi-desc">Per trip occupancy.</div>
+    </div>
+    <div class="kpi">
+      <span class="kpi-num">v.</span>
+      <div class="kpi-label">Date Range</div>
+      <div class="kpi-value" id="kpiDateRange"><span class="skeleton"></span></div>
+      <div class="kpi-desc">Observation window, 2016.</div>
+    </div>
+  </div>
+
+  <!-- Vendor compare -->
+  <div class="vendor-compare">
+    <div class="vendor-panel">
+      <div class="vendor-label v1">▌ Vendor 1 · Creative Mobile Technologies</div>
+      <div class="vendor-stats" id="vendor1Stats">
+        <div><div class="vendor-stat-label">Trips</div><div class="vendor-stat-val" id="v1Trips">—</div></div>
+        <div><div class="vendor-stat-label">Avg Duration</div><div class="vendor-stat-val" id="v1Dur">—</div></div>
+        <div><div class="vendor-stat-label">Avg Speed</div><div class="vendor-stat-val" id="v1Speed">—</div></div>
+        <div><div class="vendor-stat-label">Avg Pax</div><div class="vendor-stat-val" id="v1Pax">—</div></div>
+      </div>
+    </div>
+    <div class="vendor-panel">
+      <div class="vendor-label v2">▌ Vendor 2 · VeriFone Inc.</div>
+      <div class="vendor-stats">
+        <div><div class="vendor-stat-label">Trips</div><div class="vendor-stat-val" id="v2Trips">—</div></div>
+        <div><div class="vendor-stat-label">Avg Duration</div><div class="vendor-stat-val" id="v2Dur">—</div></div>
+        <div><div class="vendor-stat-label">Avg Speed</div><div class="vendor-stat-val" id="v2Speed">—</div></div>
+        <div><div class="vendor-stat-label">Avg Pax</div><div class="vendor-stat-val" id="v2Pax">—</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 02: TIME -->
+<section class="section wrap" id="time">
+  <div class="section-head">
+    <div class="section-num">Section <strong>02</strong></div>
+    <div class="section-title"><h2>Demand in <span class="light">time.</span></h2></div>
+    <p class="section-desc">Temporal distribution of ride requests — hourly pulse, weekly cycle, and the monthly trend across six months of observation.</p>
+  </div>
+  <div class="charts">
+    <div class="card span-6">
+      <div class="card-head">
+        <div class="card-tag">Fig. 01 · Hourly cycle</div>
+        <div class="card-title">Trips by hour of day</div>
+        <div class="card-desc">24-hour demand cycle · evening peak accented</div>
+        <div class="card-meta"><span>Window · 24h</span><span>Peak · <strong>17–20h</strong></span></div>
+      </div>
+      <div class="canvas-wrap tall" style="height:300px"><canvas id="chartHourly"></canvas><div class="canvas-empty" id="phHourly">Loading</div></div>
+    </div>
+    <div class="card span-6">
+      <div class="card-head">
+        <div class="card-tag">Fig. 02 · Weekly pattern</div>
+        <div class="card-title">Trips by day of week</div>
+        <div class="card-desc">Commute pattern vs. leisure weekends</div>
+        <div class="card-meta"><span>Accent · Thu–Fri</span><span>Scale · Linear</span></div>
+      </div>
+      <div class="canvas-wrap tall" style="height:300px"><canvas id="chartDaily"></canvas><div class="canvas-empty" id="phDaily">Loading</div></div>
+    </div>
+    <div class="card span-12">
+      <div class="card-head">
+        <div class="card-tag">Fig. 03 · Longitudinal trend</div>
+        <div class="card-title">Monthly volume over the observation window</div>
+        <div class="card-desc">January through June 2016 — showing seasonal and demand growth patterns</div>
+      </div>
+      <div class="canvas-wrap" style="height:260px"><canvas id="chartMonthly"></canvas><div class="canvas-empty" id="phMonthly">Loading</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="quote-section">
+  <div class="wrap">
+    <div class="quote-grid">
+      <div class="quote-meta">Insight N°01</div>
+      <p class="quote-text">The median cab does not hurry. It <em>negotiates</em> — with traffic, with lights, with the city — and the data remembers every second of the journey.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 03: RIDE ANATOMY -->
+<section class="section wrap" id="ride">
+  <div class="section-head">
+    <div class="section-num">Section <strong>03</strong></div>
+    <div class="section-title"><h2>Anatomy of <span class="light">a trip.</span></h2></div>
+    <p class="section-desc">Distributions of the defining variables: duration, speed, and occupancy reveal the typical NYC taxi experience.</p>
+  </div>
+  <div class="charts">
+    <div class="card span-4">
+      <div class="card-head">
+        <div class="card-tag">Fig. 04 · Duration</div>
+        <div class="card-title">Trip duration distribution</div>
+        <div class="card-desc">Minutes per trip, 5-min buckets, capped at 60 min</div>
+      </div>
+      <div class="canvas-wrap" style="height:220px"><canvas id="chartDuration"></canvas><div class="canvas-empty" id="phDuration">Loading</div></div>
+    </div>
+    <div class="card span-4">
+      <div class="card-head">
+        <div class="card-tag">Fig. 05 · Velocity</div>
+        <div class="card-title">Effective speed distribution</div>
+        <div class="card-desc">km/h in 5-unit buckets, 1–100 km/h range</div>
+      </div>
+      <div class="canvas-wrap" style="height:220px"><canvas id="chartSpeed"></canvas><div class="canvas-empty" id="phSpeed">Loading</div></div>
+    </div>
+    <div class="card span-4">
+      <div class="card-head">
+        <div class="card-tag">Fig. 06 · Occupancy</div>
+        <div class="card-title">Passengers per trip</div>
+        <div class="card-desc">Solo rides dominate; groups under-represented</div>
+      </div>
+      <div class="canvas-wrap" style="height:220px"><canvas id="chartPassengers"></canvas><div class="canvas-empty" id="phPassengers">Loading</div></div>
+    </div>
+    <div class="card span-12">
+      <div class="card-head">
+        <div class="card-tag">Fig. 07 · Market share</div>
+        <div class="card-title">Vendor 1 vs Vendor 2 dispatch split</div>
+        <div class="card-desc">The two vendor codes partition the entire record</div>
+      </div>
+      <div class="canvas-wrap" style="height:160px"><canvas id="chartVendor"></canvas><div class="canvas-empty" id="phVendor">Loading</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 04: DSA INSIGHTS -->
+<section class="section wrap" id="insights">
+  <div class="section-head">
+    <div class="section-num">Section <strong>04</strong></div>
+    <div class="section-title"><h2>Ranked <span class="light">insights.</span></h2></div>
+    <p class="section-desc">Custom Quicksort (O(n log n), space O(log n)) applied server-side to rank hours by demand intensity — no library sort functions used.</p>
+  </div>
+
+  <div class="insight-strip">
+    <div class="insight-card">
+      <div class="insight-num">Insight 01 · Peak demand hour</div>
+      <div class="insight-val" id="ins1Val">—</div>
+      <div class="insight-label" id="ins1Label">The single hour with the highest recorded trip volume across all 6 months of data.</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-num">Insight 02 · Quietest hour</div>
+      <div class="insight-val" id="ins2Val">—</div>
+      <div class="insight-label" id="ins2Label">The hour when New York City's cabs are nearly still.</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-num">Insight 03 · Peak-to-trough ratio</div>
+      <div class="insight-val" id="ins3Val">—</div>
+      <div class="insight-label">The multiplicative difference in demand between peak hour and the quietest, revealing the amplitude of daily rhythm.</div>
+    </div>
+  </div>
+
+  <div class="dsa-block">
+    <div class="dsa-head">
+      <span>Custom Quicksort · Hours ranked by trip volume (descending)</span>
+      <span class="complexity">Time · O(n log n) &nbsp;|&nbsp; Space · O(log n)</span>
+    </div>
+    <div class="dsa-body" id="dsaRanking">
+      <div style="padding:20px;font-family:var(--mono);font-size:11px;color:var(--ink-3);">Loading ranking…</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 05: MAP -->
+<section class="section wrap" id="map">
+  <div class="section-head">
+    <div class="section-num">Section <strong>05</strong></div>
+    <div class="section-title"><h2>Geography of <span class="light">demand.</span></h2></div>
+    <p class="section-desc">Pickup density across NYC, rendered as heat from 8,000 sampled coordinates. Manhattan concentration visible at city scale.</p>
+  </div>
+  <div style="border:1px solid var(--rule)">
+    <div style="padding:20px 28px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div class="card-tag">Fig. 08 · Spatial density</div>
+        <div class="card-title">Pickup density distribution across the five boroughs</div>
+      </div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.12em;text-align:right;line-height:1.6">
+        <span>8,000 sampled points</span><br>
+        <span>Leaflet · CartoDB</span>
+      </div>
+    </div>
+    <div id="pickupMap"></div>
+  </div>
+</section>
+
+<!-- SECTION 06: DATA TABLE -->
+<section class="section wrap" id="data">
+  <div class="section-head">
+    <div class="section-num">Section <strong>06</strong></div>
+    <div class="section-title"><h2>Individual <span class="light">records.</span></h2></div>
+    <p class="section-desc">The unfiltered archive. Filter by hour, day of week, or passenger count — then sort and search any trip in the corpus.</p>
+  </div>
+
+  <div class="filters">
+    <div class="filters-head">
+      <span>Filter parameters</span>
+      <span>● Active</span>
+    </div>
+    <div class="filters-body">
+      <div class="filters-grid">
+        <div class="field"><label for="fHour">Hour (0–23)</label><select id="fHour"><option value="">Any hour</option></select></div>
+        <div class="field"><label for="fDay">Day of week</label><select id="fDay"><option value="">Any day</option><option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option><option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option></select></div>
+        <div class="field"><label for="fPassengers">Passengers</label><select id="fPassengers"><option value="">Any</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
+      </div>
+    </div>
+    <div class="filters-actions">
+      <button class="btn btn-primary" id="applyFilters">Apply filter</button>
+      <button class="btn btn-ghost" id="resetFilters">Reset</button>
+    </div>
+  </div>
+
+  <div class="archive">
+    <div class="archive-head">
+      <h3>Trip Archive <span class="count">[<span id="archiveCount">—</span> records]</span></h3>
+      <div class="search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Search by trip ID">
+      </div>
+    </div>
+    <div class="archive-scroll">
+      <table id="tripsTable">
+        <thead><tr>
+          <th>Trip ID</th>
+          <th>Vendor</th>
+          <th>Pickup Time</th>
+          <th data-sort="passenger_count">Pax <span class="indicator">↕</span></th>
+          <th data-sort="trip_duration">Duration <span class="indicator">↕</span></th>
+          <th data-sort="speed_kmh">Speed <span class="indicator">↕</span></th>
+          <th>Hour</th>
+          <th>Day</th>
+        </tr></thead>
+        <tbody id="tripsBody"><tr><td colspan="8" class="empty-row">Loading records…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <div class="pagination-info" id="paginationInfo">—</div>
+      <div class="pagination-controls" id="paginationControls"></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand" style="grid-column:1/6">
+        <div class="brand-mono">▲ Metropolitan Mobility · 2026</div>
+        <h3>NYC Taxi<br>Analytics.</h3>
+        <p>1,446,457 trips. Six months of urban motion. Every second remembered.</p>
+      </div>
+      <div class="footer-col" style="grid-column:7/10">
+        <h4>Stack</h4>
+        <ul>
+          <li><strong>Flask</strong> · Python API layer</li>
+          <li><strong>SQLite</strong> · 1.4M trips, indexed</li>
+          <li><strong>Chart.js</strong> · Data figures</li>
+          <li><strong>Leaflet</strong> · Cartography</li>
+          <li><strong>Vanilla JS</strong> · No framework</li>
+        </ul>
+      </div>
+      <div class="footer-col" style="grid-column:10/13">
+        <h4>Sections</h4>
+        <ul>
+          <li><a href="#overview">01 · Overview</a></li>
+          <li><a href="#time">02 · Time</a></li>
+          <li><a href="#ride">03 · Ride anatomy</a></li>
+          <li><a href="#insights">04 · Ranked insights</a></li>
+          <li><a href="#map">05 · Map</a></li>
+          <li><a href="#data">06 · Data archive</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Team Green · NYC TLC Dataset</span>
+      <span>Quicksort DSA · O(n log n) server-side ranking</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+<script src="index.js"></script>
+</body>
+</html>
