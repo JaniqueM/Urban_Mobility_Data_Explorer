@@ -186,7 +186,8 @@ pip install -r api/requirements.txt
 ### 3. Run Data Processing
 
 ```
-python database/setup_db.py
+cd database
+python setup_db.py
 ```
 
 ---
@@ -194,7 +195,8 @@ python database/setup_db.py
 ### 4. Start Backend Server
 
 ```
-python api/app.py
+cd ../api
+python app.py
 ```
 
 ---
