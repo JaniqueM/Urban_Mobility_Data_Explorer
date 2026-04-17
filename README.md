@@ -194,7 +194,7 @@ python database/setup_db.py
 ### 4. Start Backend Server
 
 ```
-python backend/app.py
+python api/app.py
 ```
 
 ---
