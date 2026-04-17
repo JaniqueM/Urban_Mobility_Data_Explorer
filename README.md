@@ -169,8 +169,8 @@ The frontend provides an interactive interface to explore the dataset.
 ### 1. Clone the Repository
 
 ```
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
+git clone https://github.com/JaniqueM/Urban_Mobility_data_Explorer.git
+cd Urban_Mobility_data_Explorer
 ```
 
 ---
@@ -178,7 +178,7 @@ cd your-repo
 ### 2. Install Dependencies
 
 ```
-pip install -r requirements.txt
+pip install -r api/requirements.txt
 ```
 
 ---
@@ -186,7 +186,7 @@ pip install -r requirements.txt
 ### 3. Run Data Processing
 
 ```
-python ../database/setup_db.py
+python database/setup_db.py
 ```
 
 ---
@@ -194,7 +194,7 @@ python ../database/setup_db.py
 ### 4. Start Backend Server
 
 ```
-python ../backend/app.py
+python backend/app.py
 ```
 
 ---
