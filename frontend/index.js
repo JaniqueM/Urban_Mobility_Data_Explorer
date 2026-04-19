@@ -72,7 +72,6 @@ async function loadStats(){
         $('heroTrips').textContent = fmtCompact(d.total_trips);
         $('kpiTrips').innerHTML = '<span style="font-size:0.65em;letter-spacing:-0.01em">'+fmtCompact(d.total_trips)+'</span>';
         $('kpiDuration').innerHTML = fmt(d.avg_duration_min,1)+'<span class="sub">min</span>';
-        $('kpiSpeed').innerHTML = fmt(d.avg_speed_kmh,1)+'<span class="sub">km/h</span>';
         $('kpiPassengers').innerHTML = fmt(d.avg_passengers,2)+'<span class="sub">avg</span>';
         // Date range
         const e=d.earliest?.slice(0,7),l=d.latest?.slice(0,7);
@@ -92,7 +91,6 @@ async function loadVendors(){
             const n = v.vendor_id;
             $(`v${n}Trips`).textContent = fmtCompact(v.total_trips);
             $(`v${n}Dur`).textContent = fmt(v.avg_duration,1)+'m';
-            $(`v${n}Speed`).textContent = fmt(v.avg_speed,1)+'km/h';
             $(`v${n}Pax`).textContent = fmt(v.avg_passengers,2);
         });
         // Chart
@@ -278,7 +276,6 @@ async function loadTable(){
         <td>${fmtTime(r.pickup_datetime)}</td>
         <td>${r.passenger_count??'—'}</td>
         <td><span class="mono-cell">${fmt(r.duration_min,1)} min</span></td>
-        <td><span class="mono-cell">${fmt(r.speed_kmh,1)} km/h</span></td>
         <td><span class="mono-cell">${String(r.pickup_hour??'?').padStart(2,'0')}h</span></td>
         <td>${DAYS[r.day_of_week]??'—'}</td>
       </tr>`).join('');
