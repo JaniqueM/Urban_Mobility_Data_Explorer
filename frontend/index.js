@@ -65,7 +65,7 @@ async function api(path){
     return r.json();
 }
 
-// ── Stats / KPIs ──────────────────────────────────────────────────────────────
+// Stats / KPIs 
 async function loadStats(){
     try{
         const d = await api('/stats');
@@ -83,7 +83,7 @@ async function loadStats(){
     }
 }
 
-// ── Vendor compare ────────────────────────────────────────────────────────────
+// Vendor compare 
 async function loadVendors(){
     try{
         const rows = await api('/trips/vendor-comparison');
@@ -108,7 +108,7 @@ async function loadVendors(){
     } catch{}
 }
 
-// ── Hourly chart ──────────────────────────────────────────────────────────────
+// Hourly chart 
 async function loadHourly(){
     try{
         const rows = await api('/trips/by-hour');
@@ -123,7 +123,7 @@ async function loadHourly(){
     } catch{ const ph=$('phHourly'); if(ph){ph.style.display='grid';ph.textContent='Unavailable';} }
 }
 
-// ── Daily chart ───────────────────────────────────────────────────────────────
+// Daily chart 
 async function loadDaily(){
     try{
         const rows = await api('/trips/by-day');
@@ -138,7 +138,7 @@ async function loadDaily(){
     } catch{ const ph=$('phDaily'); if(ph){ph.style.display='grid';ph.textContent='Unavailable';} }
 }
 
-// ── Monthly chart ─────────────────────────────────────────────────────────────
+// Monthly chart
 async function loadMonthly(){
     try{
         const rows = await api('/trips/monthly-trend');
@@ -153,7 +153,7 @@ async function loadMonthly(){
     } catch{ const ph=$('phMonthly'); if(ph){ph.style.display='grid';ph.textContent='Unavailable';} }
 }
 
-// ── Duration chart ────────────────────────────────────────────────────────────
+// Duration chart
 async function loadDuration(){
     try{
         const rows = await api('/trips/by-duration');
@@ -168,7 +168,7 @@ async function loadDuration(){
     } catch{ const ph=$('phDuration'); if(ph){ph.style.display='grid';ph.textContent='Unavailable';} }
 }
 
-// ── Speed chart ───────────────────────────────────────────────────────────────
+// Speed chart
 async function loadSpeed(){
     try{
         const rows = await api('/trips/speed-distribution');
@@ -183,7 +183,7 @@ async function loadSpeed(){
     } catch{ const ph=$('phSpeed'); if(ph){ph.style.display='grid';ph.textContent='Unavailable';} }
 }
 
-// ── Passengers chart ──────────────────────────────────────────────────────────
+// Passengers chart
 async function loadPassengers(){
     try{
         const rows = await api('/trips/by-passenger');
@@ -198,7 +198,7 @@ async function loadPassengers(){
     } catch{ const ph=$('phPassengers'); if(ph){ph.style.display='grid';ph.textContent='Unavailable';} }
 }
 
-// ── DSA Quicksort Rankings ────────────────────────────────────────────────────
+// DSA Quicksort Rankings
 async function loadRankings(){
     try{
         const d = await api('/trips/peak-hours-ranked');
@@ -230,7 +230,7 @@ async function loadRankings(){
     } catch(e){ $('dsaRanking').innerHTML='<div style="padding:20px;font-family:var(--mono);font-size:11px;color:var(--ink-3);">Rankings unavailable</div>'; }
 }
 
-// ── Map ────────────────────────────────────────────────────────────────────────
+// Map
 let lmap=null, heatLayer=null;
 function initMap(){
     if(lmap) return;
@@ -248,7 +248,7 @@ async function loadHeatmap(){
     } catch(e){ console.error('Heatmap error',e); }
 }
 
-// ── Trips table ────────────────────────────────────────────────────────────────
+// Trips table
 async function loadTable(){
     const body = $('tripsBody');
     body.innerHTML = '<tr><td colspan="8" class="empty-row">Loading…</td></tr>';
@@ -309,7 +309,7 @@ async function loadTable(){
     }
 }
 
-// ── Event listeners ────────────────────────────────────────────────────────────
+// Event listeners
 $('applyFilters').addEventListener('click',()=>{
     state.hour = $('fHour').value;
     state.day = $('fDay').value;
@@ -330,7 +330,7 @@ $('searchInput').addEventListener('input',e=>{
     tSearch=setTimeout(()=>{state.search=e.target.value.trim();loadTable();},350);
 });
 
-// ── Init ────────────────────────────────────────────────────────────────────────
+// Init 
 async function init(){
     setStatus(false,'Connecting');
     await Promise.allSettled([
